@@ -11,27 +11,35 @@ If nothing is missing, it shows a big green **OK**.
 
 ---
 
-## 1. Quick start (copy-paste)
+## 1. Quick start
 
-You need **Python 3.9 or newer**. Check with `python3 --version`. On Windows, use `python --version`.
+You need **Python 3.9 or newer** ([python.org](https://www.python.org/downloads/)). On Windows, tick **"Add Python to PATH"** while installing.
 
-### macOS / Linux
+### Step 1: Download the code
+On this GitHub page click the green **Code** button, choose **Download ZIP**, and unzip it.
+You get a folder called `partcheck-main`.
+
+### Step 2: Install the requirements (only once)
+Open a terminal **inside the `partcheck-main` folder** and run:
+
+**macOS / Linux**
 ```bash
-git clone https://github.com/Udghosh-Rao/partcheck.git
-cd partcheck
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python app.py
+pip3 install -r requirements.txt
 ```
 
-### Windows (Command Prompt or PowerShell)
+**Windows**
 ```bat
-git clone https://github.com/Udghosh-Rao/partcheck.git
-cd partcheck
-python -m venv .venv
-.venv\Scripts\activate
 pip install -r requirements.txt
+```
+
+### Step 3: Run the app
+**macOS / Linux**
+```bash
+python3 app.py
+```
+
+**Windows**
+```bat
 python app.py
 ```
 
@@ -41,19 +49,19 @@ When you see
 PartCheck running -> open http://127.0.0.1:8765
 ```
 
-open **http://127.0.0.1:8765** in your browser (Chrome, Edge, Safari or Firefox).
-
+open **http://127.0.0.1:8765** in your browser.
 To stop the app, press **Ctrl + C** in the terminal.
 
-### Next time
-You only install once. After that:
-```bash
-cd partcheck
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
-python app.py
-```
+### Even easier: double-click
+- **Windows:** double-click **`run.bat`**
+- **macOS:** double-click **`run.command`**. The first time, right-click it and choose **Open**.
 
-> The internet is needed only once, for `pip install`. After that the app runs with Wi-Fi turned off.
+These scripts install the requirements if they are missing, start the app and open the browser.
+
+> **How to open a terminal in the folder:** on Windows, open the folder, click the address bar, type `cmd` and press Enter.
+> On macOS, right-click the folder and choose **New Terminal at Folder**.
+>
+> The internet is needed only once, for the install. After that the app runs with Wi-Fi turned off.
 
 ---
 
@@ -170,7 +178,8 @@ python tools/evaluate.py my_board/
 
 | Problem | Fix |
 |---|---|
-| `python3: command not found` | Install Python from python.org. On Windows, use `python` instead of `python3` |
+| `python3: command not found` / `pip3: command not found` | Install Python from python.org. On Windows, use `python` / `pip` |
+| `pip` says "externally-managed-environment" (macOS Homebrew Python) | Run `pip3 install --user --break-system-packages -r requirements.txt` |
 | `pip install` fails on opencv | Upgrade pip with `python -m pip install --upgrade pip`, then try again |
 | `Address already in use` | Another program uses port 8765. Close it, or change `port=8765` at the bottom of `app.py` |
 | Page doesn't open | Make sure the terminal still shows "PartCheck running", and use `http://127.0.0.1:8765` |
@@ -183,6 +192,7 @@ python tools/evaluate.py my_board/
 
 | File / folder | What it does |
 |---|---|
+| `run.bat` / `run.command` | Double-click to install the requirements and start the app (Windows / macOS) |
 | `app.py` | Local web server (Flask). Saves the reference and parts, and runs the inspection |
 | `inspector.py` | The image-processing logic: alignment, lighting fix, per-part scoring |
 | `static/` | The web page: `index.html`, `style.css`, `app.js` (no external libraries) |
