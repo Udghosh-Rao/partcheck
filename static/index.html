@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PartCheck · Missing Part Inspector</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="logo">◎</span> PartCheck <small>offline board inspector</small></div>
+  <nav class="steps" id="steps">
+    <button data-step="1"><b>1</b> Reference board</button>
+    <button data-step="2"><b>2</b> Name the parts</button>
+    <button data-step="3"><b>3</b> Inspect photos</button>
+  </nav>
+</header>
+
+<main>
+  <!-- STEP 1 -->
+  <section id="step1" class="panel">
+    <div class="head">
+      <h1>Upload a photo of a <em>good</em> board</h1>
+      <p>This is the reference. Every later photo is compared against it. Use the fixed line camera.</p>
+    </div>
+    <label class="drop" id="refDrop">
+      <input type="file" accept="image/*" id="refInput" hidden>
+      <div class="drop-inner">
+        <div class="big-icon">⬆</div>
+        <div><b>Click or drop</b> a reference photo here</div>
+        <div class="muted">JPG / PNG</div>
+      </div>
+    </label>
+    <div class="how" id="how">
+      <div><b>1</b><h4>Teach once</h4><p>Upload a photo of a complete, good board.</p></div>
+      <div><b>2</b><h4>Name the parts</h4><p>Draw a box around each part you care about and give it a name.</p></div>
+      <div><b>3</b><h4>Check every board</h4><p>Upload photos from the same camera. Get <span class="g">OK</span> or the missing parts, shown on the photo.</p></div>
+    </div>
+    <div id="refPreview" class="ref-preview hidden">
+      <img id="refThumb" alt="reference">
+      <div class="ref-actions">
+        <button class="btn primary" data-goto="2">Next: name the parts →</button>
+        <button class="btn ghost" id="replaceRef">Replace reference</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section id="step2" class="panel hidden">
+    <div class="head">
+      <h1>Draw a box around each part and name it</h1>
+      <p>Click-and-drag on the photo. Type a name (e.g. <code>C3</code>, <code>USB port</code>) and press Enter. Saved automatically.</p>
+    </div>
+    <div class="editor">
+      <div class="stage" id="stage">
+        <img id="refImg" alt="reference" draggable="false">
+        <svg id="overlay"></svg>
+        <div id="namePop" class="name-pop hidden">
+          <input id="nameInput" placeholder="Part name" maxlength="40">
+          <button class="btn primary sm" id="nameOk">Add</button>
+          <button class="btn ghost sm" id="nameCancel">✕</button>
+        </div>
+      </div>
+      <aside class="side">
+        <div class="side-head"><h3>Parts <span id="partCount" class="pill">0</span></h3>
+          <button class="btn ghost sm" id="clearParts" title="Remove all parts">Clear</button></div>
+        <ul id="partList" class="part-list"></ul>
+        <p class="hint" id="emptyHint">No parts yet. Drag a box on the photo to add one.</p>
+        <div class="tips">
+          <b>Tips</b>
+          <ul><li>Box the part snugly; a little board around it is fine.</li>
+          <li>Drag a box to move it; drag its corner to resize.</li>
+          <li>Hover a part in the list to highlight it.</li>
+          <li><kbd>Ctrl/⌘ Z</kbd> undoes the last box.</li></ul>
+        </div>
+        <button class="btn primary wide" data-goto="3" id="toInspect">Next: inspect photos →</button>
+      </aside>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section id="step3" class="panel hidden">
+    <div class="head row">
+      <div>
+        <h1>Check photos of the same board</h1>
+        <p>Upload one or more photos taken the same way. Each gets a verdict.</p>
+      </div>
+      <details class="settings">
+        <summary>⚙ Sensitivity</summary>
+        <label>Flag a part as missing when similarity is below
+          <b id="thrVal">0.55</b></label>
+        <input type="range" min="0.2" max="0.9" step="0.01" id="thr">
+        <div class="muted">Higher = stricter. Re-run to apply.</div>
+      </details>
+    </div>
+    <label class="drop small" id="testDrop">
+      <input type="file" accept="image/*" id="testInput" multiple hidden>
+      <div class="drop-inner"><div class="big-icon">⬆</div>
+        <div><b>Click or drop</b> board photos here (multiple allowed)</div></div>
+    </label>
+    <div class="summary hidden" id="summary">
+      <div class="stat"><span id="sumTotal">0</span> photos checked</div>
+      <div class="stat ok"><span id="sumOk">0</span> OK</div>
+      <div class="stat bad"><span id="sumBad">0</span> with missing parts</div>
+      <button class="btn ghost sm" id="exportCsv">⬇ Export CSV</button>
+    </div>
+    <div class="toolbar hidden" id="resToolbar">
+      <label class="switch"><input type="checkbox" id="showAll"> show present parts too</label>
+      <button class="btn ghost sm" id="rerun">↻ Re-run</button>
+      <button class="btn ghost sm" id="clearRes">Clear results</button>
+    </div>
+    <div id="results" class="results"></div>
+  </section>
+</main>
+
+<div id="toast" class="toast hidden"></div>
+<div id="lightbox" class="lightbox hidden"><div class="lb-inner"></div></div>
+<script src="app.js"></script>
+</body>
+</html>
