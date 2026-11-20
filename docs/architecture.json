@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": { "title": "PartCheck: offline missing-part inspector", "output": "architecture.html", "quality_profile": "showcase", "locale": "en" },
+  "components": [
+    { "id": "operator", "type": "external", "label": "Line operator", "sublabel": "browser on laptop", "pos": [40, 70], "size": [130, 60] },
+    { "id": "ui", "type": "frontend", "label": "Web UI", "sublabel": "HTML/CSS/JS, no CDN", "pos": [270, 70], "size": [140, 60], "tag": "3 steps" },
+    { "id": "api", "type": "backend", "label": "Flask server", "sublabel": "app.py :8765", "pos": [520, 70], "size": [140, 60] },
+    { "id": "store", "type": "database", "label": "data/ folder", "sublabel": "reference.png, parts.json", "pos": [505, 230], "size": [170, 60] },
+    { "id": "align", "type": "backend", "label": "Aligner", "sublabel": "ORB + RANSAC homography", "pos": [770, 70], "size": [160, 60], "tag": "ECC fallback" },
+    { "id": "compare", "type": "backend", "label": "Part comparator", "sublabel": "NCC gray + edges + colour", "pos": [770, 230], "size": [160, 60] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "Laptop, offline (localhost only)", "wraps": ["ui", "api", "store", "align", "compare"] }
+  ],
+  "connections": [
+    { "id": "use", "from": "operator", "to": "ui", "label": "upload, draw", "variant": "emphasis" },
+    { "id": "rest", "from": "ui", "to": "api", "label": "REST JSON" },
+    { "id": "persist", "from": "api", "to": "store", "label": "save / load" },
+    { "id": "inspect", "from": "api", "to": "align", "label": "inspect()" },
+    { "id": "warp", "from": "align", "to": "compare", "label": "warped photo" },
+    { "id": "verdict", "from": "compare", "to": "api", "label": "verdict", "variant": "dashed" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Setup (once)", "items": ["Upload good board photo", "Draw + name a box per part", "Boxes stored as 0-1 coordinates"] },
+    { "dot": "emerald", "title": "Inspect (per photo)", "items": ["Align photo to reference", "Template-match each part in a small window", "Score < threshold = missing"] },
+    { "dot": "rose", "title": "Output", "items": ["Green OK, or red MISSING + names", "Boxes projected back onto the original photo"] }
+  ]
+}
